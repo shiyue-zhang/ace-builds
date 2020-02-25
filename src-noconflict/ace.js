@@ -33,16 +33,10 @@
  * @param module a name for the payload
  * @param payload a function to call with (require, exports, module) params
  */
-
+var ace = {};
 (function() {
 
-var ACE_NAMESPACE = "ace";
-
-var global = (function() { return this; })();
-if (!global && typeof window != "undefined") global = window; // strict mode
-
-
-if (!ACE_NAMESPACE && typeof requirejs !== "undefined")
+if (typeof requirejs !== "undefined")
     return;
 
 
@@ -148,13 +142,8 @@ var lookup = function(parentId, moduleName) {
     return module;
 };
 
-function exportAce(ns) {
-    var root = global;
-    if (ns) {
-        if (!global[ns])
-            global[ns] = {};
-        root = global[ns];
-    }
+function exportAce() {
+    var root = ace;
 
     if (!root.define || !root.define.packaged) {
         define.original = root.define;
@@ -169,7 +158,7 @@ function exportAce(ns) {
     }
 }
 
-exportAce(ACE_NAMESPACE);
+exportAce();
 
 })();
 
@@ -19045,13 +19034,9 @@ exports.version = "1.2.4";
                 ace.require(["ace/ace"], function(a) {
                     if (a) {
                         a.config.init(true);
-                        if (!a.define)
-                            a.define = ace.define;
+                        a.define = ace.define;
                     }
-                    if (!window.ace)
-                        window.ace = a;
-                    for (var key in a) if (a.hasOwnProperty(key))
-                        window.ace[key] = a[key];
+                    module.exports = a;
                 });
             })();
         
